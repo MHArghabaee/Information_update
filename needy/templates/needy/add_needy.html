@@ -1,0 +1,242 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="fa">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>فرم ثبت نیازمندان</title>
+    <style>
+        @font-face {
+            font-family: 'IRANSans';
+            src: url('{% static 'fonts/IRANSans Medium.ttf' %}') format('truetype');
+        }
+
+        body {
+            font-family: 'IRANSans', sans-serif;
+            background: linear-gradient(135deg, #74ebd5, #9face6);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            direction: rtl;
+            padding: 10px;
+            box-sizing: border-box;
+        }
+
+        .registration-container {
+            background: #ffffff;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 600px;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+
+        .registration-container h1 {
+            text-align: center;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        .form-group {
+            position: relative;
+            margin-bottom: 15px;
+        }
+
+        .form-group input, .form-group textarea, .form-group select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 14px;
+            background-color: #f9f9f9;
+            box-sizing: border-box;
+        }
+
+        .form-group input:focus, .form-group textarea:focus, .form-group select:focus {
+            border-color: #74ebd5;
+            background-color: #fff;
+            outline: none;
+        }
+
+        .form-group label {
+            font-size: 14px;
+            color: #333;
+            margin-bottom: 5px;
+            display: block;
+        }
+
+        .register-btn {
+            width: 100%;
+            padding: 10px;
+            background: linear-gradient(135deg, #74ebd5, #9face6);
+            border: none;
+            border-radius: 4px;
+            color: white;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+
+        .register-btn:hover {
+            background: linear-gradient(135deg, #9face6, #74ebd5);
+        }
+
+        .fieldset-group {
+            margin-bottom: 20px;
+        }
+
+        .fieldset-group legend {
+            font-weight: bold;
+            font-size: 16px;
+        }
+
+        .form-group textarea {
+            height: 100px; /* تنظیم ارتفاع برای textarea */
+        }
+
+        @media (max-width: 600px) {
+            .registration-container {
+                padding: 15px;
+            }
+
+            .form-group input, .form-group textarea, .form-group select {
+                padding: 8px;
+                font-size: 12px;
+            }
+
+            .form-group label {
+                font-size: 12px;
+            }
+
+            .register-btn {
+                padding: 8px;
+                font-size: 14px;
+            }
+
+            .fieldset-group legend {
+                font-size: 14px;
+            }
+        }
+    </style>
+    <!-- افزودن jQuery -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            // تبدیل تاریخ میلادی به شمسی
+            function gregorianToJalali(gy, gm, gd) {
+                const g_d_m = [0, 31, 59, 90, 120, 151, 181, 212, 243, 273, 304, 334];
+                let jy = (gy <= 1600) ? 0 : 979;
+                gy -= (gy <= 1600) ? 621 : 1600;
+                let gy2 = (gm > 2) ? (gy + 1) : gy;
+                let days = (365 * gy) + (parseInt((gy2 + 3) / 4)) - (parseInt((gy2 + 99) / 100)) + (parseInt((gy2 + 399) / 400)) - 80 + gd + g_d_m[gm - 1];
+                jy += 33 * (parseInt(days / 12053));
+                days %= 12053;
+                jy += 4 * (parseInt(days / 1461));
+                days %= 1461;
+                jy += parseInt((days - 1) / 365);
+                if (days > 365) days = (days - 1) % 365;
+                let jm = (days < 186) ? 1 + parseInt(days / 31) : 7 + parseInt((days - 186) / 30);
+                let jd = 1 + ((days < 186) ? (days % 31) : ((days - 186) % 30));
+                return [jy, jm, jd];
+            }
+
+            // نمایش تاریخ شمسی در فیلد
+            $('#birth_date').on('change', function() {
+                const date = new Date(this.value);
+                const [jy, jm, jd] = gregorianToJalali(date.getFullYear(), date.getMonth() + 1, date.getDate());
+                this.value = `${jy}/${jm}/${jd}`;
+            });
+
+            // نمایش بخش معرف فقط در صورت پر کردن اطلاعات معرف
+            $('#introducer_section').hide();
+            $('input[name="introducer_name"], input[name="introducer_phone"]').on('input', function() {
+                if ($(this).val().trim() !== '') {
+                    $('#introducer_section').fadeIn();
+                } else {
+                    $('#introducer_section').fadeOut();
+                }
+            });
+        });
+    </script>
+</head>
+<body>
+<div class="registration-container">
+    <h1>ثبت نیازمند</h1>
+    <form action="" method="POST">
+        {% csrf_token %}
+
+        <!-- اطلاعات معرف -->
+        <fieldset class="fieldset-group">
+            <legend>اطلاعات معرف</legend>
+            <div class="form-group">
+                <label for="introducer_name">نام و نام خانوادگی معرف</label>
+                <input type="text" name="introducer_name" id="introducer_name">
+            </div>
+            <div class="form-group">
+                <label for="introducer_phone">شماره تلفن معرف</label>
+                <input type="text" name="introducer_phone" id="introducer_phone">
+            </div>
+        </fieldset>
+
+        <div id="introducer_section">
+            <div class="form-group">
+                <label for="full_name">نام و نام خانوادگی</label>
+                <input type="text" name="full_name" id="full_name" required>
+            </div>
+            <div class="form-group">
+                <label for="father_name">نام پدر</label>
+                <input type="text" name="father_name" id="father_name">
+            </div>
+            <div class="form-group">
+                <label for="family_members">تعداد اعضای تحت سرپرستی</label>
+                <input type="number" name="family_members" id="family_members">
+            </div>
+            <div class="form-group">
+                <label for="birth_date">تاریخ تولد</label>
+                <input type="date" id="birth_date" name="birth_date" required>
+            </div>
+            <div class="form-group">
+                <label for="marital_status">وضعیت تاهل</label>
+                <input type="text" name="marital_status" id="marital_status">
+            </div>
+            <div class="form-group">
+                <label for="religion">مذهب</label>
+                <input type="text" name="religion" id="religion">
+            </div>
+            <div class="form-group">
+                <label for="job">شغل</label>
+                <input type="text" name="job" id="job">
+            </div>
+            <div class="form-group">
+                <label for="is_covered">تحت پوشش</label>
+                <input type="text" name="is_covered" id="is_covered">
+            </div>
+            <div class="form-group">
+                <label for="national_code">کد ملی</label>
+                <input type="text" name="national_code" id="national_code" required>
+            </div>
+            <div class="form-group">
+                <label for="phone_number">شماره تماس</label>
+                <input type="text" name="phone_number" id="phone_number" required>
+            </div>
+            <div class="form-group">
+                <label for="street">خیابان</label>
+                <input type="text" name="street" id="street">
+            </div>
+            <div class="form-group">
+                <label for="address">آدرس</label>
+                <textarea name="address" id="address"></textarea>
+            </div>
+            <div class="form-group">
+                <label for="description">توضیحات</label>
+                <textarea name="description" id="description"></textarea>
+            </div>
+        </div>
+        <button type="submit" class="register-btn">ثبت</button>
+    </form>
+</div>
+</body>
+</html>

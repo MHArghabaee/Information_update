@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="fa">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>لیست نیازمندان</title>
+    <style>
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        th, td {
+            padding: 8px;
+            text-align: right;
+            border: 1px solid #ddd;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+        .actions a {
+            margin: 0 5px;
+            text-decoration: none;
+            color: blue;
+        }
+    </style>
+</head>
+<body>
+    <h1>لیست نیازمندان</h1>
+    <a href="{% url 'needy_create' %}">افزودن نیازمند جدید</a>
+    <table>
+        <thead>
+            <tr>
+                <th>ردیف</th>
+                <th>نام و نام خانوادگی</th>
+                <th>تعداد اعضای تحت سرپرستی</th>
+                <th>وضعیت تاهل</th>
+                <th>عملیات</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for needy in needies %}
+            <tr>
+                <td>{{ forloop.counter }}</td>
+                <td>{{ needy.full_name }}</td>
+                <td>{{ needy.family_members }}</td>
+                <td>{{ needy.marital_status }}</td>
+                <td class="actions">
+                    <a href="{% url 'needy_detail' needy.pk %}">جزئیات</a>
+                    <a href="{% url 'needy_update' needy.pk %}">ویرایش</a>
+                    <a href="{% url 'needy_delete' needy.pk %}">حذف</a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</body>
+</html>

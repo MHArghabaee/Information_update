@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="fa">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>حذف نیازمند</title>
+</head>
+<body>
+    <h1>آیا مطمئن هستید؟</h1>
+    <p>آیا می‌خواهید "{{ needy.full_name }}" را حذف کنید؟</p>
+    <form method="post">
+        {% csrf_token %}
+        <button type="submit">حذف</button>
+    </form>
+    <a href="{% url 'needy_list' %}">بازگشت به لیست</a>
+</body>
+</html>

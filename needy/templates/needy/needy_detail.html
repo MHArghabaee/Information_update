@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="fa">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>جزئیات نیازمند</title>
+</head>
+<body>
+    <h1>جزئیات نیازمند</h1>
+    <p>نام و نام خانوادگی: {{ needy.full_name }}</p>
+    <p>نام پدر: {{ needy.father_name }}</p>
+    <p>تعداد اعضای تحت سرپرستی: {{ needy.family_members }}</p>
+    <p>تاریخ تولد: {{ needy.birth_date }}</p>
+    <p>وضعیت تاهل: {{ needy.marital_status }}</p>
+    <p>مذهب: {{ needy.religion }}</p>
+    <p>شغل: {{ needy.job }}</p>
+    <p>تحت پوشش: {% if needy.is_covered %}بله{% else %}خیر{% endif %}</p>
+    <p>کد ملی: {{ needy.national_code }}</p>
+    <p>شماره تماس: {{ needy.phone_number }}</p>
+    <p>آدرس: {{ needy.address }}</p>
+    <p>توضیحات: {{ needy.description }}</p>
+    <a href="{% url 'needy_list' %}">بازگشت به لیست</a>
+</body>
+</html>
