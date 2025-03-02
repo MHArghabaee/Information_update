@@ -1,6 +1,10 @@
 from django.db import models
+from django.contrib.auth import get_user_model
 
+User = get_user_model()
 class Needy(models.Model):
+    created_by = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, verbose_name="کاربر ایجاد کننده")
+
     introducer_name = models.CharField(max_length=100, verbose_name="نام و نام خانوادگی معرف", null=True, blank=True)
     introducer_phone = models.CharField(max_length=15, verbose_name="شماره تلفن معرف", null=True, blank=True)
     full_name = models.CharField(max_length=100, verbose_name="نام و نام خانوادگی", null=True, blank=True)

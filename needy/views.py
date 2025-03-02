@@ -4,6 +4,8 @@ from .models import Needy
 
 
 def add_needy(request):
+    if not request.user.is_authenticated:
+        return redirect('login')
     if request.method == 'POST':
         # دریافت داده‌های فرم
         introducer_name = request.POST.get('introducer_name')
@@ -25,6 +27,7 @@ def add_needy(request):
         # ذخیره اطلاعات در مدل Needy
         try:
             Needy.objects.create(
+                created_by=request.user,
                 introducer_name=introducer_name,
                 introducer_phone=introducer_phone,
                 full_name=full_name,
