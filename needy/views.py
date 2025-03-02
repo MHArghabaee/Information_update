@@ -7,7 +7,6 @@ def add_needy(request):
     if not request.user.is_authenticated:
         return redirect('login')
     if request.method == 'POST':
-        # دریافت داده‌های فرم
         introducer_name = request.POST.get('introducer_name')
         introducer_phone = request.POST.get('introducer_phone')
         full_name = request.POST.get('full_name')
@@ -24,7 +23,6 @@ def add_needy(request):
         address = request.POST.get('address')
         description = request.POST.get('description')
 
-        # ذخیره اطلاعات در مدل Needy
         try:
             Needy.objects.create(
                 created_by=request.user,
@@ -45,7 +43,7 @@ def add_needy(request):
                 description=description
             )
             messages.success(request, 'اطلاعات نیازمند با موفقیت ثبت شد.')
-            return redirect('register_needy')  # بازگشت به همان صفحه پس از ثبت
+            return redirect('register_needy')
         except Exception as e:
             messages.error(request, f'خطا در ثبت اطلاعات: {str(e)}')
 
