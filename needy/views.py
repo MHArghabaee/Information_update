@@ -67,6 +67,7 @@ def add_needy(request):
         except Exception as e:
             print(str(e))
 
+<<<<<<< Updated upstream
     return render(request, 'needy/add_needy.html',
                   {'path_choices': Needy.PATH_CHOICES, 'selected_path': request.POST.get('path', 'undefined')})
 
@@ -83,3 +84,13 @@ def success_view(request):
 
     # ارسال اطلاعات نیازمند به تمپلیت
     return render(request, 'needy/success.html', {'needy': last_needy})
+=======
+    return render(request, 'needy/add_needy.html')
+
+
+
+def needy_list(request):
+    needy = Needy.objects.all()
+    context = {'needy': needy}
+    return render(request, 'needy/needy_list.html', context)
+>>>>>>> Stashed changes
