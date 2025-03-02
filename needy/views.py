@@ -19,6 +19,9 @@ def add_needy(request):
     if request.method == 'POST':
         user = request.user
         path_choices = Needy.PATH_CHOICES
+        selected_path = request.POST.get('path',
+                                         'تعریف نشده')  # اگر هیچ مسیری انتخاب نشده باشد، "تعریف نشده" پیش‌فرض می‌شود.
+
         has_introducer = request.POST.get('has_introducer')
         introducer_name = request.POST.get('introducer_name')
         introducer_phone = request.POST.get('introducer_phone')
@@ -57,10 +60,26 @@ def add_needy(request):
                 phone_number=phone_number,
                 street=street,
                 address=address,
-                description=description
+                description=description,
+                path=selected_path  # ذخیره مسیر انتخابی
             )
-            return redirect('register_needy')
+            return redirect('success_view')
         except Exception as e:
             print(str(e))
 
-    return render(request, 'needy/add_needy.html', {'path_choices': Needy.PATH_CHOICES})
+    return render(request, 'needy/add_needy.html',
+                  {'path_choices': Needy.PATH_CHOICES, 'selected_path': request.POST.get('path', 'undefined')})
+
+
+def success_view(request):
+    if not request.user.is_authenticated:
+        return redirect('login')
+    # پیدا کردن آخرین نیازمند ثبت شده توسط کاربر جاری
+    last_needy = Needy.objects.filter(created_by=request.user).last()
+
+    if last_needy is None:
+        # اگر نیازمندی وجود نداشت، کاربر را به صفحه‌ی ثبت هدایت می‌کنیم
+        return redirect('register_needy')
+
+    # ارسال اطلاعات نیازمند به تمپلیت
+    return render(request, 'needy/success.html', {'needy': last_needy})

@@ -1,0 +1,67 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="fa">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>مصاحبه ثبت شد</title>
+    <style>
+        body {
+            font-family: 'IRANSans', sans-serif;
+            background: linear-gradient(135deg, #74ebd5, #9face6);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            text-align: center;
+        }
+
+        .confirmation-container {
+            background: #ffffff;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            max-width: 400px;
+            text-align: center;
+        }
+
+        h1 {
+            color: #333;
+        }
+
+        p {
+            font-size: 18px;
+            margin-bottom: 20px;
+        }
+
+        .survey-btn {
+            display: inline-block;
+            padding: 10px 20px;
+            background: linear-gradient(135deg, #74ebd5, #9face6);
+            border: none;
+            border-radius: 4px;
+            color: white;
+            font-size: 16px;
+            cursor: pointer;
+            text-decoration: none;
+        }
+
+        .survey-btn:hover {
+            background: linear-gradient(135deg, #9face6, #74ebd5);
+        }
+    </style>
+</head>
+<body>
+<div class="confirmation-container">
+    <h1>نیازمند با موفقیت ثبت شد</h1>
+
+    <p><strong>نام و نام خانوادگی:</strong> {{ needy.full_name }}</p>
+    <p><strong>تاریخ تولد:</strong> {{ needy.birth_date|date:"Y/m/d" }}</p>
+    <p><strong>مسیر:</strong> {{ needy.get_path_display }}</p>
+    <p><strong>آدرس:</strong> {{ needy.address }}</p>
+
+    <a href="{% url 'add_needy' %}" class="survey-btn">بازگشت به ثبت نیازمندان</a>
+</div>
+</body>
+</html>
