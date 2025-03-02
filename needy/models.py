@@ -3,6 +3,7 @@ from django.contrib.auth import get_user_model
 
 User = get_user_model()
 
+
 class Needy(models.Model):
     PATH_CHOICES = [(str(i), f"مسیر {i}") for i in range(1, 11)]
 
@@ -20,10 +21,10 @@ class Needy(models.Model):
     is_covered = models.CharField(max_length=100, verbose_name="تحت پوشش", null=True, blank=True)
     national_code = models.CharField(max_length=10, verbose_name="کد ملی", null=True, blank=True)
     phone_number = models.CharField(max_length=15, verbose_name="شماره تماس", null=True, blank=True)
+    path = models.CharField(max_length=15, choices=PATH_CHOICES, verbose_name="مسیر", null=True, blank=True)
     street = models.CharField(max_length=100, verbose_name="خیابان", null=True, blank=True)
     address = models.TextField(verbose_name="آدرس", null=True, blank=True)
     description = models.TextField(verbose_name="توضیحات", null=True, blank=True)
-    path = models.CharField(max_length=15, choices=PATH_CHOICES, verbose_name="مسیر", null=True, blank=True)
 
     def __str__(self):
         return self.full_name
