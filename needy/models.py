@@ -5,7 +5,7 @@ User = get_user_model()
 
 
 class Needy(models.Model):
-    PATH_CHOICES = [(str(i), f"مسیر {i}") for i in range(1, 11)]
+    PATH_CHOICES = [("تعریف نشده", "تعریف نشده")] + [(str(i), f"مسیر {i}") for i in range(1, 11)]
 
     created_by = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, verbose_name="کاربر ایجاد کننده")
 

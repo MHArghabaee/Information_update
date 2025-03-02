@@ -248,6 +248,21 @@
             <input type="text" name="phone_number" id="phone_number" required>
         </div>
         <div class="form-group">
+            <label for="path">مسیر</label>
+            <select name="path" id="path" required>
+                <option value="undefined" {% if selected_path == 'undefined' %}selected{% endif %}>تعریف نشده</option>
+                <!-- گزینه پیش‌فرض "تعریف نشده" -->
+                {% for value, label in path_choices %}
+                    {% if value != 'undefined' %}
+                        <option value="{{ value }}"
+                                {% if value == selected_path %}selected{% endif %}>{{ label }}</option>
+                    {% endif %}
+                {% endfor %}
+            </select>
+        </div>
+
+
+        <div class="form-group">
             <label for="street">خیابان</label>
             <input type="text" name="street" id="street">
         </div>

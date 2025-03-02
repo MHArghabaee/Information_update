@@ -18,6 +18,7 @@ def add_needy(request):
         return redirect('login')
     if request.method == 'POST':
         user = request.user
+        path_choices = Needy.PATH_CHOICES
         has_introducer = request.POST.get('has_introducer')
         introducer_name = request.POST.get('introducer_name')
         introducer_phone = request.POST.get('introducer_phone')
@@ -62,4 +63,4 @@ def add_needy(request):
         except Exception as e:
             print(str(e))
 
-    return render(request, 'needy/add_needy.html')
+    return render(request, 'needy/add_needy.html', {'path_choices': Needy.PATH_CHOICES})
