@@ -1,12 +1,24 @@
 from django.shortcuts import render, redirect
 from django.contrib import messages
 from .models import Needy
+import jdatetime
+
+
+def convert_persian_to_gregorian(persian_date):
+    try:
+        persian_date_obj = jdatetime.datetime.strptime(persian_date, "%Y/%m/%d")
+        gregorian_date = persian_date_obj.togregorian()
+        return gregorian_date.strftime("%Y-%m-%d")  # تبدیل به فرمت میلادی YYYY-MM-DD
+    except ValueError:
+        return None
 
 
 def add_needy(request):
     if not request.user.is_authenticated:
         return redirect('login')
     if request.method == 'POST':
+        user = request.user
+        has_introducer = request.POST.get('has_introducer')
         introducer_name = request.POST.get('introducer_name')
         introducer_phone = request.POST.get('introducer_phone')
         full_name = request.POST.get('full_name')
@@ -22,10 +34,14 @@ def add_needy(request):
         street = request.POST.get('street')
         address = request.POST.get('address')
         description = request.POST.get('description')
+        birth_date = convert_persian_to_gregorian(birth_date)
 
+        if has_introducer == None:
+            introducer_name = user.get_full_name()
+            introducer_phone = user.username
         try:
             Needy.objects.create(
-                created_by=request.user,
+                created_by=user,
                 introducer_name=introducer_name,
                 introducer_phone=introducer_phone,
                 full_name=full_name,
@@ -42,9 +58,8 @@ def add_needy(request):
                 address=address,
                 description=description
             )
-            messages.success(request, 'اطلاعات نیازمند با موفقیت ثبت شد.')
             return redirect('register_needy')
         except Exception as e:
-            messages.error(request, f'خطا در ثبت اطلاعات: {str(e)}')
+            print(str(e))
 
     return render(request, 'needy/add_needy.html')

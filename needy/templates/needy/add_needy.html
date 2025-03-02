@@ -153,6 +153,14 @@
     <!-- افزودن کتابخانه PersianDatePicker -->
     <link rel="stylesheet" href="https://unpkg.com/persian-datepicker/dist/css/persian-datepicker.min.css">
     <script src="https://unpkg.com/persian-datepicker/dist/js/persian-datepicker.min.js"></script>
+    <!-- استایل و کتابخانه‌های مورد نیاز -->
+    <!-- کتابخانه تقویم فارسی (باید قبل از Persian Datepicker بارگذاری شود) -->
+    <script src="https://cdn.jsdelivr.net/npm/persian-date@latest/dist/persian-date.min.js"></script>
+
+    <!-- Persian Datepicker -->
+    <script src="https://cdn.jsdelivr.net/npm/persian-datepicker@1.2.0/dist/js/persian-datepicker.min.js"></script>
+
+
     <script>
         // تابع برای نمایش/مخفی کردن بخش معرف
         function toggleIntroducerSection() {
@@ -173,13 +181,13 @@
     <form action="" method="POST">
         {% csrf_token %}
 
-        <!-- چک‌باکس "معرف دارد" -->
         <div class="checkbox-group">
             <label>
                 <input type="checkbox" id="has_introducer" name="has_introducer" onchange="toggleIntroducerSection()">
                 معرف دارد
             </label>
         </div>
+
 
         <!-- بخش اطلاعات معرف -->
         <div id="introducer_section">
@@ -206,6 +214,10 @@
             <input type="text" name="father_name" id="father_name">
         </div>
         <div class="form-group">
+            <label for="national_code">کد ملی</label>
+            <input type="text" name="national_code" id="national_code" required>
+        </div>
+        <div class="form-group">
             <label for="family_members">تعداد اعضای تحت سرپرستی</label>
             <input type="number" name="family_members" id="family_members">
         </div>
@@ -213,6 +225,7 @@
             <label for="birth_date">تاریخ تولد</label>
             <input type="text" id="birth_date" name="birth_date" required>
         </div>
+
         <div class="form-group">
             <label for="marital_status">وضعیت تاهل</label>
             <input type="text" name="marital_status" id="marital_status">
@@ -229,10 +242,7 @@
             <label for="is_covered">تحت پوشش</label>
             <input type="text" name="is_covered" id="is_covered">
         </div>
-        <div class="form-group">
-            <label for="national_code">کد ملی</label>
-            <input type="text" name="national_code" id="national_code" required>
-        </div>
+
         <div class="form-group">
             <label for="phone_number">شماره تماس</label>
             <input type="text" name="phone_number" id="phone_number" required>
@@ -252,5 +262,25 @@
         <button type="submit" class="register-btn">ثبت</button>
     </form>
 </div>
+<script>
+    $(document).ready(function () {
+        $("#birth_date").persianDatepicker({
+            format: "YYYY/MM/DD",
+            autoClose: true,
+            initialValue: false
+        });
+    });
+</script>
+
 </body>
+<script>
+    $(document).ready(function () {
+        $("#birth_date").persianDatepicker({
+            format: "YYYY/MM/DD",
+            autoClose: true,
+            initialValue: false
+        });
+    });
+</script>
+
 </html>
