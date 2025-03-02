@@ -97,6 +97,25 @@
             height: 100px; /* تنظیم ارتفاع برای textarea */
         }
 
+        /* استایل‌دهی چک‌باکس "معرف دارد" */
+        .checkbox-group {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .checkbox-group label {
+            margin-right: 10px;
+            font-size: 14px;
+            color: #333;
+        }
+
+        .checkbox-group input[type="checkbox"] {
+            width: 20px;
+            height: 20px;
+            cursor: pointer;
+        }
+
         @media (max-width: 600px) {
             .registration-container {
                 padding: 15px;
@@ -120,46 +139,32 @@
                 font-size: 14px;
             }
         }
+
+        .checkbox-group {
+            margin-bottom: 15px;
+        }
+
+        #introducer_section {
+            display: none; /* مخفی کردن اولیه بخش معرف */
+        }
     </style>
     <!-- افزودن jQuery -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <!-- افزودن کتابخانه PersianDatePicker -->
+    <link rel="stylesheet" href="https://unpkg.com/persian-datepicker/dist/css/persian-datepicker.min.css">
+    <script src="https://unpkg.com/persian-datepicker/dist/js/persian-datepicker.min.js"></script>
     <script>
-        $(document).ready(function() {
-            // تبدیل تاریخ میلادی به شمسی
-            function gregorianToJalali(gy, gm, gd) {
-                const g_d_m = [0, 31, 59, 90, 120, 151, 181, 212, 243, 273, 304, 334];
-                let jy = (gy <= 1600) ? 0 : 979;
-                gy -= (gy <= 1600) ? 621 : 1600;
-                let gy2 = (gm > 2) ? (gy + 1) : gy;
-                let days = (365 * gy) + (parseInt((gy2 + 3) / 4)) - (parseInt((gy2 + 99) / 100)) + (parseInt((gy2 + 399) / 400)) - 80 + gd + g_d_m[gm - 1];
-                jy += 33 * (parseInt(days / 12053));
-                days %= 12053;
-                jy += 4 * (parseInt(days / 1461));
-                days %= 1461;
-                jy += parseInt((days - 1) / 365);
-                if (days > 365) days = (days - 1) % 365;
-                let jm = (days < 186) ? 1 + parseInt(days / 31) : 7 + parseInt((days - 186) / 30);
-                let jd = 1 + ((days < 186) ? (days % 31) : ((days - 186) % 30));
-                return [jy, jm, jd];
+        // تابع برای نمایش/مخفی کردن بخش معرف
+        function toggleIntroducerSection() {
+            const introducerSection = document.getElementById('introducer_section');
+            const hasIntroducer = document.getElementById('has_introducer').checked;
+
+            if (hasIntroducer) {
+                introducerSection.style.display = 'block'; // نمایش بخش
+            } else {
+                introducerSection.style.display = 'none'; // مخفی کردن بخش
             }
-
-            // نمایش تاریخ شمسی در فیلد
-            $('#birth_date').on('change', function() {
-                const date = new Date(this.value);
-                const [jy, jm, jd] = gregorianToJalali(date.getFullYear(), date.getMonth() + 1, date.getDate());
-                this.value = `${jy}/${jm}/${jd}`;
-            });
-
-            // نمایش بخش معرف فقط در صورت پر کردن اطلاعات معرف
-            $('#introducer_section').hide();
-            $('input[name="introducer_name"], input[name="introducer_phone"]').on('input', function() {
-                if ($(this).val().trim() !== '') {
-                    $('#introducer_section').fadeIn();
-                } else {
-                    $('#introducer_section').fadeOut();
-                }
-            });
-        });
+        }
     </script>
 </head>
 <body>
@@ -168,72 +173,81 @@
     <form action="" method="POST">
         {% csrf_token %}
 
-        <!-- اطلاعات معرف -->
-        <fieldset class="fieldset-group">
-            <legend>اطلاعات معرف</legend>
-            <div class="form-group">
-                <label for="introducer_name">نام و نام خانوادگی معرف</label>
-                <input type="text" name="introducer_name" id="introducer_name">
-            </div>
-            <div class="form-group">
-                <label for="introducer_phone">شماره تلفن معرف</label>
-                <input type="text" name="introducer_phone" id="introducer_phone">
-            </div>
-        </fieldset>
+        <!-- چک‌باکس "معرف دارد" -->
+        <div class="checkbox-group">
+            <label>
+                <input type="checkbox" id="has_introducer" name="has_introducer" onchange="toggleIntroducerSection()">
+                معرف دارد
+            </label>
+        </div>
 
+        <!-- بخش اطلاعات معرف -->
         <div id="introducer_section">
-            <div class="form-group">
-                <label for="full_name">نام و نام خانوادگی</label>
-                <input type="text" name="full_name" id="full_name" required>
-            </div>
-            <div class="form-group">
-                <label for="father_name">نام پدر</label>
-                <input type="text" name="father_name" id="father_name">
-            </div>
-            <div class="form-group">
-                <label for="family_members">تعداد اعضای تحت سرپرستی</label>
-                <input type="number" name="family_members" id="family_members">
-            </div>
-            <div class="form-group">
-                <label for="birth_date">تاریخ تولد</label>
-                <input type="date" id="birth_date" name="birth_date" required>
-            </div>
-            <div class="form-group">
-                <label for="marital_status">وضعیت تاهل</label>
-                <input type="text" name="marital_status" id="marital_status">
-            </div>
-            <div class="form-group">
-                <label for="religion">مذهب</label>
-                <input type="text" name="religion" id="religion">
-            </div>
-            <div class="form-group">
-                <label for="job">شغل</label>
-                <input type="text" name="job" id="job">
-            </div>
-            <div class="form-group">
-                <label for="is_covered">تحت پوشش</label>
-                <input type="text" name="is_covered" id="is_covered">
-            </div>
-            <div class="form-group">
-                <label for="national_code">کد ملی</label>
-                <input type="text" name="national_code" id="national_code" required>
-            </div>
-            <div class="form-group">
-                <label for="phone_number">شماره تماس</label>
-                <input type="text" name="phone_number" id="phone_number" required>
-            </div>
-            <div class="form-group">
-                <label for="street">خیابان</label>
-                <input type="text" name="street" id="street">
-            </div>
-            <div class="form-group">
-                <label for="address">آدرس</label>
-                <textarea name="address" id="address"></textarea>
-            </div>
-            <div class="form-group">
-                <label for="description">توضیحات</label>
-                <textarea name="description" id="description"></textarea>
-            </div>
+            <fieldset class="fieldset-group">
+                <legend> اطلاعات معرف</legend>
+                <div class="form-group">
+                    <label for="introducer_name">نام و نام خانوادگی معرف</label>
+                    <input type="text" id="introducer_name" name="introducer_name">
+                </div>
+                <div class="form-group">
+                    <label for="introducer_phone">شماره تلفن معرف</label>
+                    <input type="text" id="introducer_phone" name="introducer_phone">
+                </div>
+            </fieldset>
+        </div>
+
+        <!-- اطلاعات اصلی -->
+        <div class="form-group">
+            <label for="full_name">نام و نام خانوادگی</label>
+            <input type="text" name="full_name" id="full_name" required>
+        </div>
+        <div class="form-group">
+            <label for="father_name">نام پدر</label>
+            <input type="text" name="father_name" id="father_name">
+        </div>
+        <div class="form-group">
+            <label for="family_members">تعداد اعضای تحت سرپرستی</label>
+            <input type="number" name="family_members" id="family_members">
+        </div>
+        <div class="form-group">
+            <label for="birth_date">تاریخ تولد</label>
+            <input type="text" id="birth_date" name="birth_date" required>
+        </div>
+        <div class="form-group">
+            <label for="marital_status">وضعیت تاهل</label>
+            <input type="text" name="marital_status" id="marital_status">
+        </div>
+        <div class="form-group">
+            <label for="religion">مذهب</label>
+            <input type="text" name="religion" id="religion">
+        </div>
+        <div class="form-group">
+            <label for="job">شغل</label>
+            <input type="text" name="job" id="job">
+        </div>
+        <div class="form-group">
+            <label for="is_covered">تحت پوشش</label>
+            <input type="text" name="is_covered" id="is_covered">
+        </div>
+        <div class="form-group">
+            <label for="national_code">کد ملی</label>
+            <input type="text" name="national_code" id="national_code" required>
+        </div>
+        <div class="form-group">
+            <label for="phone_number">شماره تماس</label>
+            <input type="text" name="phone_number" id="phone_number" required>
+        </div>
+        <div class="form-group">
+            <label for="street">خیابان</label>
+            <input type="text" name="street" id="street">
+        </div>
+        <div class="form-group">
+            <label for="address">آدرس</label>
+            <textarea name="address" id="address"></textarea>
+        </div>
+        <div class="form-group">
+            <label for="description">توضیحات</label>
+            <textarea name="description" id="description"></textarea>
         </div>
         <button type="submit" class="register-btn">ثبت</button>
     </form>
