@@ -43,6 +43,8 @@ def convert_gregorian_to_jalali(date_string):
     formatted_jalali_date = jalali_date.strftime("%Y/%m/%d")
 
     return formatted_jalali_date
+
+
 def add_needy(request):
     if not request.user.is_authenticated:
         return redirect('login')
@@ -97,7 +99,6 @@ def add_needy(request):
         except Exception as e:
             print(str(e))
 
-
     return render(request, 'needy/add_needy.html',
                   {'path_choices': Needy.PATH_CHOICES, 'selected_path': request.POST.get('path', 'undefined')})
 
@@ -116,31 +117,31 @@ def success_view(request):
     return render(request, 'needy/success.html', {'needy': last_needy})
 
 
-
 def needy_list(request):
     needy = Needy.objects.all()
     context = {'needy': needy}
     return render(request, 'needy/needy_list.html', context)
 
 
-
-
-
-
-
 def export_needy_to_excel(request):
+    if not request.user.is_authenticated:
+        return redirect('login')
+    if not request.user.is_superuser:
+        return redirect('add_needy')
     # دریافت تمامی نیازمندان از دیتابیس
     needy_list = get_list_or_404(Needy)
 
     # ایجاد یک DataFrame از لیست نیازمندان
     data = {
-        'کاربر ایجاد کننده': [needy.created_by.get_full_name() if needy.created_by else 'نامشخص' for needy in needy_list],
+        'کاربر ایجاد کننده': [needy.created_by.get_full_name() if needy.created_by else 'نامشخص' for needy in
+                              needy_list],
         'نام و نام خانوادگی معرف': [needy.introducer_name for needy in needy_list],
         'شماره تلفن معرف': [needy.introducer_phone for needy in needy_list],
         'نام و نام خانوادگی': [needy.full_name for needy in needy_list],
         'نام پدر': [needy.father_name for needy in needy_list],
         'تعداد اعضای تحت سرپرستی': [needy.family_members for needy in needy_list],
-        'تاریخ تولد': [convert_gregorian_to_jalali(needy.birth_date) if needy.birth_date else '' for needy in needy_list],  # تبدیل تاریخ به شمسی
+        'تاریخ تولد': [convert_gregorian_to_jalali(needy.birth_date) if needy.birth_date else '' for needy in
+                       needy_list],  # تبدیل تاریخ به شمسی
         'وضعیت تاهل': [needy.marital_status for needy in needy_list],
         'مذهب': [needy.religion for needy in needy_list],
         'شغل': [needy.job for needy in needy_list],
