@@ -118,6 +118,8 @@ def success_view(request):
 
 
 def needy_list(request):
+    if not request.user.is_authenticated:
+        return redirect('login')
     needy = Needy.objects.all()
     context = {'needy': needy}
     return render(request, 'needy/needy_list.html', context)
