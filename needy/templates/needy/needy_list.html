@@ -212,56 +212,71 @@
         }
 
 
-        /* حالت پیش‌فرض (دسکتاپ) */
-        h1 {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            flex-wrap: wrap; /* برای حالت موبایل */
-            margin: 0; /* حذف margin پیش‌فرض */
-            font-size: 28px;
-            color: #333;
-        }
+/* حالت پیش‌فرض (دسکتاپ) */
+h1 {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap; /* برای حالت موبایل */
+    margin: 0; /* حذف margin پیش‌فرض */
+    margin-bottom: 30px; /* افزایش فاصله با بخش فیلتر */
+    font-size: 28px;
+    color: #333;
+}
 
-        h1 a {
-            text-decoration: none;
-        }
+h1 div {
+    display: flex; /* دکمه‌ها کنار هم */
+    gap: 10px; /* فاصله بین دکمه‌ها */
+}
 
-        h1 a button {
-            background: linear-gradient(135deg, #00b894, #00cec9);
-            color: white;
-            padding: 10px 20px;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            font-family: 'IRANSans', sans-serif;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            transition: transform 0.3s, box-shadow 0.3s;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-        }
+h1 a {
+    text-decoration: none;
+}
 
-        h1 a button:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 8px rgba(0, 0, 0, 0.15);
-        }
+h1 a button {
+    background: linear-gradient(135deg, #00b894, #00cec9);
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-family: 'IRANSans', sans-serif;
+    display: flex;
+    align-items: center;
+    justify-content: center; /* متن وسط‌چین */
+    gap: 8px;
+    transition: transform 0.3s, box-shadow 0.3s;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    text-align: center; /* متن وسط‌چین */
+}
 
-        /* حالت موبایل */
-        @media (max-width: 600px) {
-            h1 {
-                flex-direction: column; /* تغییر جهت به عمودی */
-                align-items: center; /* وسط‌چین افقی */
-                text-align: center; /* متن وسط‌چین */
-            }
+h1 a button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 8px rgba(0, 0, 0, 0.15);
+}
 
-            h1 a button {
-                margin-top: 10px; /* فاصله از متن */
-                width: 100%; /* عرض کامل والد */
-                font-size: 14px; /* کاهش اندازه فونت */
-                padding: 8px 16px; /* کاهش padding */
-            }
-        }
+/* حالت موبایل */
+@media (max-width: 600px) {
+    h1 {
+        flex-direction: column; /* تغییر جهت به عمودی */
+        align-items: center; /* وسط‌چین افقی */
+        text-align: center; /* متن وسط‌چین */
+    }
+
+    h1 div {
+        flex-direction: column; /* دکمه‌ها زیر هم */
+        width: 100%; /* عرض کامل */
+    }
+
+    h1 a button {
+        margin-top: 10px; /* فاصله از متن */
+        width: 100%; /* عرض کامل والد */
+        font-size: 14px; /* کاهش اندازه فونت */
+        padding: 8px 16px; /* کاهش padding */
+        justify-content: center; /* متن وسط‌چین */
+        text-align: center; /* متن وسط‌چین */
+    }
+}
     </style>
     <script>
         document.addEventListener("DOMContentLoaded", function () {
@@ -286,24 +301,16 @@
 </div>
 
 <div class="container">
-    <h1 style="display: flex; justify-content: space-between; align-items: center;">
-        لیست نیازمندان ثبت شده
-        <a href="{% url 'add_needy' %}" style="text-decoration: none;">
-            <button style="background: linear-gradient(135deg, #00b894, #00cec9);
-                       color: white;
-                       padding: 10px 20px;
-                       border: none;
-                       border-radius: 5px;
-                       cursor: pointer;
-                       font-family: 'IRANSans';
-                       display: flex;
-                       align-items: center;
-                       gap: 8px;
-                       transition: transform 0.3s;
-                       box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);">
-                افزودن نیازمند
-            </button>
-        </a>
+    <h1>
+        لیست نیازمندان
+        <div>
+            <a href="{% url 'export_needy_to_excel' %}">
+                <button>خروجی Excel</button>
+            </a>
+            <a href="{% url 'add_needy' %}">
+                <button>افزودن نیازمند</button>
+            </a>
+        </div>
     </h1>
 
     {% if messages %}
