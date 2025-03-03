@@ -1,4 +1,4 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
 from .models import Needy
 import jdatetime
@@ -121,6 +121,14 @@ def needy_list(request):
     needy = Needy.objects.all()
     context = {'needy': needy}
     return render(request, 'needy/needy_list.html', context)
+
+
+def delete_needy(request, id):
+    needy = get_object_or_404(Needy, id=id)
+    needy.delete()
+    messages.success(request, 'نیازمند با موفقیت حذف شد.')
+    return redirect('needy_list')
+
 
 
 def export_needy_to_excel(request):

@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>مصاحبه ثبت شد</title>
+    <title>نیازمند ثبت شد</title>
     <style>
         body {
             font-family: 'IRANSans', sans-serif;
@@ -59,9 +59,9 @@
     <p><strong>نام و نام خانوادگی:</strong> {{ needy.full_name }}</p>
     <p><strong>تاریخ تولد:</strong> {{ needy.birth_date|date:"Y/m/d" }}</p>
     <p><strong>مسیر:</strong> {{ needy.get_path_display }}</p>
-    <p><strong>آدرس:</strong> {{ needy.address }}</p>
 
-    <a href="{% url 'add_needy' %}" class="survey-btn">بازگشت به ثبت نیازمندان</a>
+    <a href="{% url 'add_needy' %}" class="survey-btn">افزودن نیازمند</a>
+    <a href="{% url 'needy_list' %}" class="survey-btn">لیست نیازمندان</a>
 </div>
 </body>
 </html>
