@@ -124,7 +124,7 @@ def needy_list(request):
     context = {'needy': needy}
     return render(request, 'needy/needy_list.html', context)
 
-
+#
 def delete_needy(request, id):
     needy = get_object_or_404(Needy, id=id)
     needy.delete()
