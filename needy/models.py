@@ -13,9 +13,13 @@ class Needy(models.Model):
         ('کمیته امداد و بهزیستی', 'کمیته امداد و بهزیستی'),
     ]
     MARITAL_STATUS_CHOICES = [
-        ("single", "مجرد"),
-        ("married", "متاهل"),
-        ("divorced", "متارکه"),
+        ("مجرد", "مجرد"),
+        ("متاهل", "متاهل"),
+        ("متارکه", "متارکه"),
+    ]
+    RELIGION_CHOICES = [
+        ("شیعه", "شیعه"),
+        ("سنی", "سنی"),
     ]
     created_by = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, verbose_name="کاربر ایجاد کننده")
 
@@ -32,7 +36,13 @@ class Needy(models.Model):
         null=True,
         blank=True
     )
-    religion = models.CharField(max_length=50, verbose_name="مذهب", null=True, blank=True)
+    religion = models.CharField(
+        max_length=50,
+        verbose_name="مذهب",
+        choices=RELIGION_CHOICES,
+        null=True,
+        blank=True
+    )
     job = models.CharField(max_length=100, verbose_name="شغل", null=True, blank=True)
     is_covered = models.CharField(max_length=100, choices=COVERAGE_CHOICES, verbose_name="تحت پوشش", null=True,
                                   blank=True)
