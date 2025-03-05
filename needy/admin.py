@@ -1,6 +1,8 @@
 from django.contrib import admin
 from .models import Needy
+from .models import Street
 
+admin.site.register(Street)
 @admin.register(Needy)
 class NeedyAdmin(admin.ModelAdmin):
     list_display = ("full_name", "national_code", "phone_number", "path", "created_by", "birth_date")

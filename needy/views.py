@@ -6,7 +6,7 @@ from django.http import HttpResponse
 from django.shortcuts import get_list_or_404
 from openpyxl.styles import Alignment, Border, Side, Font
 from openpyxl import Workbook
-from .models import Needy
+from .models import Needy, Street
 from datetime import datetime
 import jdatetime  # کتابخانه‌ی تبدیل تاریخ به شمسی
 
@@ -40,10 +40,11 @@ def convert_gregorian_to_jalali(date_string):
 def add_needy(request):
     if not request.user.is_authenticated:
         return redirect('login')
+    street = Street.objects.all()
     if request.method == 'POST':
         user = request.user
         selected_path = request.POST.get('path',
-                                         'تعریف نشده')  # اگر هیچ مسیری انتخاب نشده باشد، "تعریف نشده" پیش‌فرض می‌شود.
+                                         'تعریف نشده')
 
         has_introducer = request.POST.get('has_introducer')
         introducer_name = request.POST.get('introducer_name')
@@ -93,7 +94,7 @@ def add_needy(request):
     return render(request, 'needy/add_needy.html',
                   {'path_choices': Needy.PATH_CHOICES, 'selected_path': request.POST.get('path', 'undefined'),
                    "coverage_choices": Needy.COVERAGE_CHOICES, 'selected_marital_status': Needy.MARITAL_STATUS_CHOICES,
-                   'religion_choices': Needy.RELIGION_CHOICES})
+                   'religion_choices': Needy.RELIGION_CHOICES, 'streets': street})
 
 
 def success_view(request):

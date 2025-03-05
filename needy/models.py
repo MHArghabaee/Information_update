@@ -4,6 +4,12 @@ from django.contrib.auth import get_user_model
 User = get_user_model()
 
 
+class Street(models.Model):
+    name = models.CharField(max_length=100, default=' ', blank=True, null=True)
+    def __str__(self):
+        return self.name
+
+
 class Needy(models.Model):
     PATH_CHOICES = [("تعریف نشده", "تعریف نشده")] + [(str(i), f"مسیر {i}") for i in range(1, 11)]
     COVERAGE_CHOICES = [
@@ -49,7 +55,14 @@ class Needy(models.Model):
     national_code = models.CharField(max_length=10, verbose_name="کد ملی", null=True, blank=True)
     phone_number = models.CharField(max_length=15, verbose_name="شماره تماس", null=True, blank=True)
     path = models.CharField(max_length=15, choices=PATH_CHOICES, verbose_name="مسیر", null=True, blank=True)
-    street = models.CharField(max_length=100, verbose_name="خیابان", null=True, blank=True)
+    street = models.ForeignKey(
+        Street,
+        verbose_name="خیابان",
+        null=True,
+        blank=True,
+        default=None,
+        on_delete=models.SET_NULL
+    )
     address = models.TextField(verbose_name="آدرس", null=True, blank=True)
     description = models.TextField(verbose_name="توضیحات", null=True, blank=True)
 

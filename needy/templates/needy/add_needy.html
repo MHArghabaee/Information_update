@@ -302,7 +302,15 @@
 
         <div class="form-group">
             <label for="street">خیابان</label>
-            <input type="text" name="street" id="street">
+            <select name="street" id="street">
+                <option value="">انتخاب کنید</option>
+                {% for street in streets %}
+                    <option value="{{ street.id }}"
+                            {% if street.id|stringformat:"s" == selected_street %}selected{% endif %}>
+                        {{ street.name }}
+                    </option>
+                {% endfor %}
+            </select>
         </div>
         <div class="form-group">
             <label for="address">آدرس</label>
