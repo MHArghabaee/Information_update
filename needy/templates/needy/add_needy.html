@@ -260,8 +260,14 @@
         </div>
         <div class="form-group">
             <label for="is_covered">تحت پوشش</label>
-            <input type="text" name="is_covered" id="is_covered">
+            <select name="is_covered" id="is_covered">
+                {% for value, label in coverage_choices %}
+                    <option value="{{ value }}"
+                            {% if value == selected_coverage %}selected{% endif %}>{{ label }}</option>
+                {% endfor %}
+            </select>
         </div>
+
 
         <div class="form-group">
             <label for="phone_number">شماره تماس</label>

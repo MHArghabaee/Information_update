@@ -50,7 +50,6 @@ def add_needy(request):
         return redirect('login')
     if request.method == 'POST':
         user = request.user
-        path_choices = Needy.PATH_CHOICES
         selected_path = request.POST.get('path',
                                          'تعریف نشده')  # اگر هیچ مسیری انتخاب نشده باشد، "تعریف نشده" پیش‌فرض می‌شود.
 
@@ -100,7 +99,8 @@ def add_needy(request):
             print(str(e))
 
     return render(request, 'needy/add_needy.html',
-                  {'path_choices': Needy.PATH_CHOICES, 'selected_path': request.POST.get('path', 'undefined')})
+                  {'path_choices': Needy.PATH_CHOICES, 'selected_path': request.POST.get('path', 'undefined'),
+                   "coverage_choices": Needy.COVERAGE_CHOICES})
 
 
 def success_view(request):
@@ -124,13 +124,13 @@ def needy_list(request):
     context = {'needy': needy}
     return render(request, 'needy/needy_list.html', context)
 
+
 #
 def delete_needy(request, id):
     needy = get_object_or_404(Needy, id=id)
     needy.delete()
     messages.success(request, 'نیازمند با موفقیت حذف شد.')
     return redirect('needy_list')
-
 
 
 def export_needy_to_excel(request):
