@@ -1,13 +1,5 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
-from .models import Needy
-import jdatetime
-import pandas as pd
-from django.http import HttpResponse
-from django.shortcuts import get_list_or_404
-from openpyxl.styles import Alignment, Border, Side, Font
-from openpyxl import Workbook
-from .models import Needy
 
 import pandas as pd
 from django.http import HttpResponse
@@ -100,7 +92,8 @@ def add_needy(request):
 
     return render(request, 'needy/add_needy.html',
                   {'path_choices': Needy.PATH_CHOICES, 'selected_path': request.POST.get('path', 'undefined'),
-                   "coverage_choices": Needy.COVERAGE_CHOICES, 'selected_marital_status': Needy.MARITAL_STATUS_CHOICES})
+                   "coverage_choices": Needy.COVERAGE_CHOICES, 'selected_marital_status': Needy.MARITAL_STATUS_CHOICES,
+                   'religion_choices': Needy.RELIGION_CHOICES})
 
 
 def success_view(request):
