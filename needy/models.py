@@ -12,6 +12,11 @@ class Needy(models.Model):
         ('بهزیستی', 'بهزیستی'),
         ('کمیته امداد و بهزیستی', 'کمیته امداد و بهزیستی'),
     ]
+    MARITAL_STATUS_CHOICES = [
+        ("single", "مجرد"),
+        ("married", "متاهل"),
+        ("divorced", "متارکه"),
+    ]
     created_by = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, verbose_name="کاربر ایجاد کننده")
 
     introducer_name = models.CharField(max_length=100, verbose_name="نام و نام خانوادگی معرف", null=True, blank=True)
@@ -20,7 +25,13 @@ class Needy(models.Model):
     father_name = models.CharField(max_length=100, verbose_name="نام پدر", null=True, blank=True)
     family_members = models.IntegerField(verbose_name="تعداد اعضای تحت سرپرستی", null=True, blank=True)
     birth_date = models.DateField(verbose_name="تاریخ تولد", null=True, blank=True)
-    marital_status = models.CharField(max_length=20, verbose_name="وضعیت تاهل", null=True, blank=True)
+    marital_status = models.CharField(
+        max_length=20,
+        verbose_name="وضعیت تاهل",
+        choices=MARITAL_STATUS_CHOICES,
+        null=True,
+        blank=True
+    )
     religion = models.CharField(max_length=50, verbose_name="مذهب", null=True, blank=True)
     job = models.CharField(max_length=100, verbose_name="شغل", null=True, blank=True)
     is_covered = models.CharField(max_length=100, choices=COVERAGE_CHOICES, verbose_name="تحت پوشش", null=True,

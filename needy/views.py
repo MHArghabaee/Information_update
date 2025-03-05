@@ -100,7 +100,7 @@ def add_needy(request):
 
     return render(request, 'needy/add_needy.html',
                   {'path_choices': Needy.PATH_CHOICES, 'selected_path': request.POST.get('path', 'undefined'),
-                   "coverage_choices": Needy.COVERAGE_CHOICES})
+                   "coverage_choices": Needy.COVERAGE_CHOICES, 'selected_marital_status': Needy.MARITAL_STATUS_CHOICES})
 
 
 def success_view(request):

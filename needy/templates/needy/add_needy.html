@@ -247,9 +247,16 @@
         </div>
 
         <div class="form-group">
-            <label for="marital_status">وضعیت تاهل</label>
-            <input type="text" name="marital_status" id="marital_status">
+            <label for="marital_status">وضعیت تأهل</label>
+            <select name="marital_status" id="marital_status">
+                {% for value, label in selected_marital_status %}
+                    <option value="{{ value }}" {% if value == selected_marital_status %}selected{% endif %}>
+                        {{ label }}
+                    </option>
+                {% endfor %}
+            </select>
         </div>
+
         <div class="form-group">
             <label for="religion">مذهب</label>
             <input type="text" name="religion" id="religion">
