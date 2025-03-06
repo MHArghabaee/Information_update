@@ -290,15 +290,14 @@
         <div class="form-group">
             <label for="path">مسیر</label>
             <select name="path" id="path" required>
-                <option value="undefined" {% if selected_path == 'undefined' %}selected{% endif %}>تعریف نشده</option>
-                {% for value, label in path_choices %}
-                    {% if value != 'undefined' %}
-                        <option value="{{ value }}"
-                                {% if value == selected_path %}selected{% endif %}>{{ label }}</option>
-                    {% endif %}
+                {% for path in needy_paths %}
+                    <option value="{{ path.id }}"
+                            {% if path.id == selected_path %}selected{% endif %}>{{ path.name }}
+                        - {{ path.street.name }}</option>
                 {% endfor %}
             </select>
         </div>
+
 
         <div class="form-group">
             <label for="street">خیابان</label>
@@ -315,6 +314,10 @@
         <div class="form-group">
             <label for="address">آدرس</label>
             <textarea name="address" id="address"></textarea>
+        </div>
+        <div class="form-group">
+            <label for="house_number">پلاک</label>
+            <input type="text" name="house_number" id="house_number">
         </div>
         <div class="form-group">
             <label for="description">توضیحات</label>

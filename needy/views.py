@@ -6,7 +6,7 @@ from django.http import HttpResponse
 from django.shortcuts import get_list_or_404
 from openpyxl.styles import Alignment, Border, Side, Font
 from openpyxl import Workbook
-from .models import Needy, Street
+from .models import Needy, Street, NeedyPath
 from datetime import datetime
 import jdatetime  # کتابخانه‌ی تبدیل تاریخ به شمسی
 
@@ -41,11 +41,10 @@ def add_needy(request):
     if not request.user.is_authenticated:
         return redirect('login')
     street = Street.objects.all()
+    needy_paths = NeedyPath.objects.all()
     if request.method == 'POST':
         user = request.user
-        selected_path = request.POST.get('path',
-                                         'تعریف نشده')
-
+        selected_path = request.POST.get('path')
         has_introducer = request.POST.get('has_introducer')
         introducer_name = request.POST.get('introducer_name')
         introducer_phone = request.POST.get('introducer_phone')
@@ -61,6 +60,8 @@ def add_needy(request):
         phone_number = request.POST.get('phone_number')
         street = request.POST.get('street')
         address = request.POST.get('address')
+        house_number = request.POST.get('house_number')
+
         description = request.POST.get('description')
         birth_date = convert_persian_to_gregorian(birth_date)
 
@@ -84,8 +85,9 @@ def add_needy(request):
                 phone_number=phone_number,
                 street=street,
                 address=address,
+                house_number=house_number,
                 description=description,
-                path=selected_path  # ذخیره مسیر انتخابی
+                path=selected_path
             )
             return redirect('success_view')
         except Exception as e:
@@ -94,7 +96,7 @@ def add_needy(request):
     return render(request, 'needy/add_needy.html',
                   {'path_choices': Needy.PATH_CHOICES, 'selected_path': request.POST.get('path', 'undefined'),
                    "coverage_choices": Needy.COVERAGE_CHOICES, 'selected_marital_status': Needy.MARITAL_STATUS_CHOICES,
-                   'religion_choices': Needy.RELIGION_CHOICES, 'streets': street})
+                   'religion_choices': Needy.RELIGION_CHOICES, 'streets': street, 'needy_paths': needy_paths})
 
 
 def success_view(request):

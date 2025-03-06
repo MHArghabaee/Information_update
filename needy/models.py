@@ -1,13 +1,26 @@
 from django.db import models
 from django.contrib.auth import get_user_model
+from django.db.models import BooleanField
 
 User = get_user_model()
 
+from django.db import models
+
 
 class Street(models.Model):
-    name = models.CharField(max_length=100, default=' ', blank=True, null=True)
+    name = models.CharField(max_length=100, null=True, blank=True, verbose_name="نام خیابان")
+
     def __str__(self):
         return self.name
+
+
+class NeedyPath(models.Model):
+    street = models.ForeignKey(Street, on_delete=models.SET_NULL, null=True, related_name="paths",
+                               verbose_name="خیابان مربوطه")
+    name = models.CharField(max_length=255, verbose_name="نام مسیر")
+
+    def __str__(self):
+        return f"{self.street.name} - {self.name}"
 
 
 class Needy(models.Model):
@@ -54,7 +67,6 @@ class Needy(models.Model):
                                   blank=True)
     national_code = models.CharField(max_length=10, verbose_name="کد ملی", null=True, blank=True)
     phone_number = models.CharField(max_length=15, verbose_name="شماره تماس", null=True, blank=True)
-    path = models.CharField(max_length=15, choices=PATH_CHOICES, verbose_name="مسیر", null=True, blank=True)
     street = models.ForeignKey(
         Street,
         verbose_name="خیابان",
@@ -63,8 +75,36 @@ class Needy(models.Model):
         default=None,
         on_delete=models.SET_NULL
     )
+    path = models.ForeignKey(
+        NeedyPath,
+        verbose_name="مسیر",
+        null=True,
+        blank=True,
+        default=1,
+        on_delete=models.SET_NULL
+    )
     address = models.TextField(verbose_name="آدرس", null=True, blank=True)
+    house_number = models.CharField(max_length=12, verbose_name="پلاک", null=True, blank=True)
     description = models.TextField(verbose_name="توضیحات", null=True, blank=True)
+    latitude = models.FloatField(
+        null=True, blank=True, verbose_name="عرض جغرافیایی",
+    )
+
+    longitude = models.FloatField(
+        null=True, blank=True, verbose_name="طول جغرافیایی",
+    )
+
+    location = models.CharField(max_length=255, null=True, blank=True, verbose_name="موقعیت جغرافیایی")
+    location_link = models.CharField(
+        max_length=500,
+        null=True, blank=True,
+        verbose_name="لینک موقعیت مکانی در نشان"
+    )
+
+    def save(self, *args, **kwargs):
+        if self.latitude and self.longitude:
+            self.location = f"Latitude: {self.latitude}, Longitude: {self.longitude}"
+        super().save(*args, **kwargs)
 
     def __str__(self):
         return self.full_name
