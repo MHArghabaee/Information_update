@@ -202,30 +202,31 @@ def export_needy_to_excel(request):
         return redirect('login')
     if not request.user.is_superuser:
         return redirect('add_needy')
+
     # دریافت تمامی نیازمندان از دیتابیس
     needy_list = get_list_or_404(Needy)
 
     # ایجاد یک DataFrame از لیست نیازمندان
     data = {
-        'کاربر ایجاد کننده': [needy.created_by.get_full_name() if needy.created_by else 'نامشخص' for needy in
-                              needy_list],
+        'کاربر ایجاد کننده': [needy.created_by.get_full_name() if needy.created_by else 'نامشخص' for needy in needy_list],
         'نام و نام خانوادگی معرف': [needy.introducer_name for needy in needy_list],
         'شماره تلفن معرف': [needy.introducer_phone for needy in needy_list],
         'نام و نام خانوادگی': [needy.full_name for needy in needy_list],
         'نام پدر': [needy.father_name for needy in needy_list],
         'تعداد اعضای تحت سرپرستی': [needy.family_members for needy in needy_list],
-        'تاریخ تولد': [convert_gregorian_to_jalali(needy.birth_date) if needy.birth_date else '' for needy in
-                       needy_list],  # تبدیل تاریخ به شمسی
+        'تاریخ تولد': [convert_gregorian_to_jalali(needy.birth_date) if needy.birth_date else '' for needy in needy_list],  # تبدیل تاریخ به شمسی
         'وضعیت تاهل': [needy.marital_status for needy in needy_list],
         'مذهب': [needy.religion for needy in needy_list],
         'شغل': [needy.job for needy in needy_list],
         'تحت پوشش': [needy.is_covered for needy in needy_list],
         'کد ملی': [needy.national_code for needy in needy_list],
         'شماره تماس': [needy.phone_number for needy in needy_list],
-        'مسیر': [needy.path for needy in needy_list],
-        'خیابان': [needy.street for needy in needy_list],
+        'مسیر': [needy.path.name if needy.path else '' for needy in needy_list],
+        'خیابان': [needy.street.name if needy.street else '' for needy in needy_list],
         'آدرس': [needy.address for needy in needy_list],
         'توضیحات': [needy.description for needy in needy_list],
+        'موقعیت جغرافیایی': [needy.location for needy in needy_list],
+        'لینک موقعیت مکانی': [needy.location_link for needy in needy_list],
     }
 
     df = pd.DataFrame(data)
