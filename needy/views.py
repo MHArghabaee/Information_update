@@ -6,6 +6,8 @@ from django.http import HttpResponse
 from django.shortcuts import get_list_or_404
 from openpyxl.styles import Alignment, Border, Side, Font
 from openpyxl import Workbook
+from pandas.io.formats.printing import PrettyDict
+
 from .models import Needy, Street, NeedyPath
 from datetime import datetime
 import jdatetime  # کتابخانه‌ی تبدیل تاریخ به شمسی
@@ -36,15 +38,32 @@ def convert_gregorian_to_jalali(date_string):
 
     return formatted_jalali_date
 
+from django.shortcuts import render
+
+def render_with_error(request, input_data, message, streets, needy_paths):
+    return render(request, 'needy/add_needy.html', {
+        'input_data': input_data,
+        'selected_path': request.POST.get('path', 'undefined'),
+        'path_choices': Needy.PATH_CHOICES,
+        "coverage_choices": Needy.COVERAGE_CHOICES,
+        'selected_marital_status': Needy.MARITAL_STATUS_CHOICES,
+        'religion_choices': Needy.RELIGION_CHOICES,
+        'streets': streets,
+        'needy_paths': needy_paths,
+        'message': message
+    })
+
 
 def add_needy(request):
     if not request.user.is_authenticated:
         return redirect('login')
-    street = Street.objects.all()
+
+    streets = Street.objects.all()
     needy_paths = NeedyPath.objects.all()
+    input_data = {}
+
     if request.method == 'POST':
         user = request.user
-        selected_path = request.POST.get('path')
         has_introducer = request.POST.get('has_introducer')
         introducer_name = request.POST.get('introducer_name')
         introducer_phone = request.POST.get('introducer_phone')
@@ -59,15 +78,61 @@ def add_needy(request):
         national_code = request.POST.get('national_code')
         phone_number = request.POST.get('phone_number')
         street = request.POST.get('street')
+        path = request.POST.get('path')
         address = request.POST.get('address')
         house_number = request.POST.get('house_number')
-
         description = request.POST.get('description')
-        birth_date = convert_persian_to_gregorian(birth_date)
 
-        if has_introducer == None:
+        input_data = {
+            'has_introducer': has_introducer,
+            'introducer_name': introducer_name,
+            'introducer_phone': introducer_phone,
+            'full_name': full_name,
+            'father_name': father_name,
+            'family_members': family_members,
+            'birth_date': birth_date,
+            'marital_status': marital_status,
+            'religion': religion,
+            'job': job,
+            'is_covered': is_covered,
+            'national_code': national_code,
+            'phone_number': phone_number,
+            'street': street,
+            'path': path,
+            'address': address,
+            'house_number': house_number,
+            'description': description,
+        }
+
+        birth_date = convert_persian_to_gregorian(birth_date)
+        if not street:
+            return render_with_error(request, input_data,
+                                     'خیابان انتخاب شده یافت نشد. لطفاً یک خیابان معتبر انتخاب کنید.', streets,
+                                     needy_paths)
+
+        if not path:
+            return render_with_error(request, input_data,
+                                     'مسیر انتخابی برای خیابان موجود نیست. لطفاً یک مسیر معتبر برای خیابان انتخاب کنید.',
+                                     streets, needy_paths)
+
+        try:
+            street_instance = Street.objects.get(id=street)
+            path_instance = NeedyPath.objects.get(street=street_instance, id=path)
+        except Street.DoesNotExist:
+            return render_with_error(request, input_data,
+                                     'خیابان انتخاب شده یافت نشد. لطفاً یک خیابان معتبر انتخاب کنید.', streets,
+                                     needy_paths)
+        except NeedyPath.DoesNotExist:
+            return render_with_error(request, input_data,
+                                     'مسیر انتخابی برای خیابان موجود نیست. لطفاً یک مسیر معتبر برای خیابان انتخاب کنید.',
+                                     streets, needy_paths)
+        except:
+            return render_with_error(request, input_data, 'خطا در اطلاعات ورودی.', streets, needy_paths)
+
+        if has_introducer is None:
             introducer_name = user.get_full_name()
             introducer_phone = user.username
+
         try:
             Needy.objects.create(
                 created_by=user,
@@ -83,33 +148,36 @@ def add_needy(request):
                 is_covered=is_covered,
                 national_code=national_code,
                 phone_number=phone_number,
-                street=street,
+                street=street_instance,
                 address=address,
                 house_number=house_number,
                 description=description,
-                path=selected_path
+                path=path_instance
             )
             return redirect('success_view')
         except Exception as e:
             print(str(e))
 
-    return render(request, 'needy/add_needy.html',
-                  {'path_choices': Needy.PATH_CHOICES, 'selected_path': request.POST.get('path', 'undefined'),
-                   "coverage_choices": Needy.COVERAGE_CHOICES, 'selected_marital_status': Needy.MARITAL_STATUS_CHOICES,
-                   'religion_choices': Needy.RELIGION_CHOICES, 'streets': street, 'needy_paths': needy_paths})
+    return render(request, 'needy/add_needy.html', {
+        'selected_path': request.POST.get('path', 'undefined'),
+        'input_data': input_data,  # ارسال داده‌ها به فرم برای پر کردن فیلدها
+        'path_choices': Needy.PATH_CHOICES,
+        "coverage_choices": Needy.COVERAGE_CHOICES,
+        'selected_marital_status': Needy.MARITAL_STATUS_CHOICES,
+        'religion_choices': Needy.RELIGION_CHOICES,
+        'streets': streets,
+        'needy_paths': needy_paths
+    })
 
 
 def success_view(request):
     if not request.user.is_authenticated:
         return redirect('login')
-    # پیدا کردن آخرین نیازمند ثبت شده توسط کاربر جاری
     last_needy = Needy.objects.filter(created_by=request.user).last()
 
     if last_needy is None:
-        # اگر نیازمندی وجود نداشت، کاربر را به صفحه‌ی ثبت هدایت می‌کنیم
         return redirect('register_needy')
 
-    # ارسال اطلاعات نیازمند به تمپلیت
     return render(request, 'needy/success.html', {'needy': last_needy})
 
 
