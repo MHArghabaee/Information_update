@@ -75,6 +75,7 @@ class Needy(models.Model):
         default=None,
         on_delete=models.SET_NULL
     )
+    # path = models.CharField(max_length=15,default=1, choices=PATH_CHOICES, verbose_name="مسیر", null=True, blank=True)
     path = models.ForeignKey(
         NeedyPath,
         verbose_name="مسیر",

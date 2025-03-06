@@ -1,33 +1,34 @@
 from django.contrib import admin
-from .models import Needy
-from .models import Street
-
-admin.site.register(Street)
-@admin.register(Needy)
-class NeedyAdmin(admin.ModelAdmin):
-    list_display = ("full_name", "national_code", "phone_number", "path", "created_by", "birth_date")
-    list_filter = ("path", "marital_status", "is_covered", "religion")
-    search_fields = ("full_name", "national_code", "phone_number")
-    ordering = ("full_name",)
-    list_editable = ("path",)
-    list_per_page = 20
+from .models import Street, NeedyPath, Needy
 
 
-from django.contrib import admin
-from .models import NeedyPath, Street
+class StreetAdmin(admin.ModelAdmin):
+    list_display = ('name',)
+    search_fields = ('name',)
+    list_filter = ('name',)
+
 
 class NeedyPathAdmin(admin.ModelAdmin):
-    list_display = ('street', 'name')  # فیلدهایی که در لیست نمایش داده شوند
-    search_fields = ('name',)  # امکان جستجو بر اساس نام مسیر
-    list_filter = ('street',)  # فیلتر کردن بر اساس خیابان
-    ordering = ('street', 'name')  # ترتیب پیش‌فرض بر اساس خیابان و سپس نام مسیر
+    list_display = ('street', 'name')
+    search_fields = ('street__name', 'name')
+    list_filter = ('street',)
 
-    # اضافه کردن گزینه برای فیلدهای انتخابی در فرم و صفحه ویرایش
-    fieldsets = (
-        (None, {
-            'fields': ('street', 'name')
-        }),
-    )
 
-# ثبت مدل و پنل ادمین
+class NeedyAdmin(admin.ModelAdmin):
+    list_display = (
+    'full_name', 'national_code', 'phone_number', 'street', 'path', 'is_covered', 'marital_status', 'religion')
+    search_fields = ('full_name', 'national_code', 'phone_number', 'street__name', 'path__name')
+    list_filter = ('is_covered', 'marital_status', 'religion', 'street', 'path')
+    list_per_page = 20
+
+    # نمایش اطلاعات اضافی
+    def has_add_permission(self, request):
+        return super().has_add_permission(request)
+
+    def has_delete_permission(self, request, obj=None):
+        return super().has_delete_permission(request, obj)
+
+
+admin.site.register(Street, StreetAdmin)
 admin.site.register(NeedyPath, NeedyPathAdmin)
+admin.site.register(Needy, NeedyAdmin)
