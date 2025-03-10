@@ -5,7 +5,7 @@ from accounts.views import login_view
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('needy/', include('needy.urls'), name='needy'),
+    path('', include('needy.urls'), name='needy'),
     path('', include('accounts.urls'), name='accounts'),
 
 ]
