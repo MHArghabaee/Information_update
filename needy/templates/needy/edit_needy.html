@@ -1,0 +1,382 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="fa">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ویرایش نیازمند</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <link rel="stylesheet" href="https://unpkg.com/persian-datepicker/dist/css/persian-datepicker.min.css">
+    <script src="https://unpkg.com/persian-datepicker/dist/js/persian-datepicker.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/persian-date@latest/dist/persian-date.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/persian-datepicker@1.2.0/dist/js/persian-datepicker.min.js"></script>
+
+    <style>
+        @font-face {
+            font-family: 'IRANSans';
+            src: url('{% static 'fonts/IRANSans Medium.ttf' %}') format('truetype');
+        }
+
+        body {
+            font-family: 'IRANSans', sans-serif;
+            background: linear-gradient(135deg, #74ebd5, #9face6);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            direction: rtl;
+            padding: 10px;
+            box-sizing: border-box;
+        }
+
+        .registration-container {
+            background: #ffffff;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 600px;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+
+        h1 {
+            margin: 0;
+            font-size: 28px;
+            color: #333;
+        }
+
+        .form-group {
+            position: relative;
+            margin-bottom: 15px;
+        }
+
+        .form-group input, .form-group textarea, .form-group select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 14px;
+            background-color: #f9f9f9;
+            box-sizing: border-box;
+        }
+
+        .form-group input:focus, .form-group textarea:focus, .form-group select:focus {
+            border-color: #74ebd5;
+            background-color: #fff;
+            outline: none;
+        }
+
+        .form-group label {
+            font-size: 14px;
+            color: #333;
+            margin-bottom: 5px;
+            display: block;
+        }
+
+        .register-btn {
+            width: 100%;
+            padding: 10px;
+            background: linear-gradient(135deg, #74ebd5, #9face6);
+            border: none;
+            border-radius: 4px;
+            font-family: 'IRANSans', sans-serif;
+            color: white;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+
+        .register-btn:hover {
+            background: linear-gradient(135deg, #9face6, #74ebd5);
+        }
+
+        .fieldset-group {
+            margin-bottom: 20px;
+        }
+
+        .fieldset-group legend {
+            font-weight: bold;
+            font-size: 16px;
+        }
+
+        .form-group textarea {
+            height: 100px;
+        }
+
+        .checkbox-group {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .checkbox-group label {
+            margin-right: 10px;
+            font-size: 14px;
+            color: #333;
+        }
+
+        .checkbox-group input[type="checkbox"] {
+            width: 20px;
+            height: 20px;
+            cursor: pointer;
+        }
+
+        #introducer_section {
+            display: none;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .list-btn {
+            display: inline-flex;
+            padding: 10px 20px;
+            background: linear-gradient(135deg, #00b894, #00cec9);
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-family: 'IRANSans', sans-serif;
+            text-decoration: none;
+            transition: transform 0.3s, box-shadow 0.3s;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .list-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 8px rgba(0, 0, 0, 0.15);
+        }
+
+        @media (max-width: 600px) {
+            .header {
+                flex-direction: column;
+                align-items: center;
+                text-align: center;
+            }
+
+            .list-btn {
+                margin-top: 10px;
+                width: 100%;
+                font-size: 14px;
+                padding: 8px 16px;
+            }
+        }
+
+        .register-btn {
+            width: 100%;
+            padding: 10px;
+            background: linear-gradient(135deg, #74ebd5, #9face6);
+            border: none;
+            border-radius: 4px;
+            font-family: 'IRANSans', sans-serif;
+            color: white;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+
+        .register-btn:hover {
+            background: linear-gradient(135deg, #9face6, #74ebd5);
+        }
+    </style>
+    <script>
+        function toggleIntroducerSection() {
+            const introducerSection = document.getElementById('introducer_section');
+            const hasIntroducer = document.getElementById('has_introducer').checked;
+
+            if (hasIntroducer) {
+                introducerSection.style.display = 'block';
+            } else {
+                introducerSection.style.display = 'none';
+            }
+        }
+    </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <link rel="stylesheet" href="https://unpkg.com/persian-datepicker/dist/css/persian-datepicker.min.css">
+    <script src="https://unpkg.com/persian-datepicker/dist/js/persian-datepicker.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/persian-date@latest/dist/persian-date.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/persian-datepicker@1.2.0/dist/js/persian-datepicker.min.js"></script>
+
+</head>
+<body>
+<div class="registration-container">
+    <div class="header">
+        <h1>ویرایش نیازمند</h1>
+        <a href="{% url 'needy_list' %}" class="list-btn">لیست نیازمندان</a>
+    </div>
+    {% if message %}
+        <div class="error-message">
+            {{ message }}
+        </div>
+    {% endif %}
+    <form action="" method="POST" onsubmit="return validateCodeMeli()">
+        {% csrf_token %}
+
+        <div id="introducer_section">
+            <fieldset class="fieldset-group">
+                <legend> اطلاعات معرف</legend>
+                <div class="form-group">
+                    <label for="introducer_name">نام و نام خانوادگی معرف</label>
+                    <input type="text" id="introducer_name" name="introducer_name"
+                           value="{{ needy.introducer_name }}">
+                </div>
+                <div class="form-group">
+                    <label for="introducer_phone">شماره تلفن معرف</label>
+                    <input type="text" id="introducer_phone" name="introducer_phone"
+                           value="{{ needy.introducer_phone }}">
+                </div>
+            </fieldset>
+        </div>
+
+        <div class="form-group">
+            <label for="introducer_name">نام و نام خانوادگی معرف</label>
+            <input type="text" name="introducer_name" id="introducer_name" value="{{ needy.introducer_name }}" required>
+        </div>
+        <div class="form-group">
+            <label for="full_name">شماره تماس معرف</label>
+            <input type="text" name="introducer_phone" id="introducer_phone" value="{{ needy.introducer_phone }}"
+                   required>
+        </div>
+
+
+        <div class="form-group">
+            <label for="full_name">نام و نام خانوادگی</label>
+            <input type="text" name="full_name" id="full_name" value="{{ needy.full_name }}" required>
+        </div>
+
+        <div class="form-group">
+            <label for="father_name">نام پدر</label>
+            <input type="text" name="father_name" id="father_name" value="{{ needy.father_name }}">
+        </div>
+
+        <div class="form-group">
+            <label for="national_code">کد ملی</label>
+            <input type="text" name="national_code" id="national_code" value="{{ needy.national_code }}" required>
+        </div>
+
+        <div class="form-group">
+            <label for="family_members">تعداد اعضای تحت سرپرستی</label>
+            <input type="number" name="family_members" id="family_members" value="{{ needy.family_members }}">
+        </div>
+
+        <div class="form-group">
+            <label for="birth_date">تاریخ تولد</label>
+            <input type="text" name="birth_date" id="birth_date" value="{{ jalali_birth_date }}" required>
+        </div>
+
+
+        <div class="form-group">
+            <label for="marital_status">وضعیت تأهل</label>
+            <select name="marital_status" id="marital_status">
+                {% for value, label in needy.MARITAL_STATUS_CHOICES %}
+                    <option value="{{ value }}"
+                            {% if needy.marital_status == value %}selected{% endif %}>{{ label }}</option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label for="religion">مذهب</label>
+            <select name="religion" id="religion">
+                {% for value, label in needy.RELIGION_CHOICES %}
+                    <option value="{{ value }}" {% if needy.religion == value %}selected{% endif %}>{{ label }}</option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label for="job">شغل</label>
+            <input type="text" name="job" id="job" value="{{ needy.job }}">
+        </div>
+
+        <div class="form-group">
+            <label for="street">خیابان</label>
+            <select name="street" id="street">
+                {% for street in streets %}
+                    <option value="{{ street.id }}"
+                            {% if street.id == needy.street_id %}selected{% endif %}>{{ street.name }}</option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label for="path">مسیر</label>
+            <select name="path" id="path">
+                {% for path in needy_paths %}
+                    <option value="{{ path.id }}"
+                            {% if path.id == needy.path_id %}selected{% endif %}>{{ path.name }}</option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label for="address">آدرس</label>
+            <textarea name="address" id="address">{{ needy.address }}</textarea>
+        </div>
+        <div class="form-group">
+            <label for="house_number">پلاک</label>
+            <input type="text" name="house_number" id="house_number" value="{{ needy.house_number }}">
+        </div>
+
+        <div class="form-group">
+            <label for="description">توضیحات</label>
+            <textarea name="description" id="description">{{ needy.description }}</textarea>
+        </div>
+
+        <button type="submit" class="register-btn">ویرایش</button>
+    </form>
+
+</div>
+<script type="text/javascript">
+    function checkCodeMeli(code) {
+        var L = code.length;
+        if (L < 8 || parseInt(code, 10) == 0) return false;
+        code = ('0000' + code).substr(L + 4 - 10);
+        if (parseInt(code.substr(3, 6), 10) == 0) return false;
+        var c = parseInt(code.substr(9, 1), 10);
+        var s = 0;
+        for (var i = 0; i < 9; i++)
+            s += parseInt(code.substr(i, 1), 10) * (10 - i);
+        s = s % 11;
+        return (s < 2 && c == s) || (s >= 2 && c == (11 - s));
+    }
+
+    function validateCodeMeli() {
+        var code = document.getElementById("id_national_code").value;
+        if (!checkCodeMeli(code)) {
+            alert("کد ملی وارد شده معتبر نیست.");
+            return false;
+        }
+        return true;
+    }
+</script>
+<script>
+    $(document).ready(function () {
+        let birthDatePersian = "{{ jalali_birth_date }}";  // مقدار شمسی از سرور به‌صورت رشته (مثلاً 1356/06/30)
+
+        if (birthDatePersian) {
+            // تنظیم مقدار فیلد تاریخ
+            $("#birth_date").val(birthDatePersian);
+        }
+
+        // تنظیم تاریخ پیش‌فرض با استفاده از selectedDate
+        $("#birth_date").persianDatepicker({
+            format: "YYYY/MM/DD",  // فرمت نمایش تاریخ شمسی
+            autoClose: true,  // بستن تقویم پس از انتخاب تاریخ
+            initialValue: false,  // مقدار اولیه را خودمان دستی مقداردهی می‌کنیم
+            selectedDate: "{{ jalali_birth_date }}",  // تاریخ پیش‌فرض در تقویم
+        });
+    });
+</script>
+
+</body>
+</html>
